@@ -1,0 +1,92 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dbcfg
+  labels:
+    app: webinar
+data:
+  POSTGRES_PASSWORD: "mySuperPwd!!2"
+  POSTGRES_USER: "dbuser"
+  POSTGRES_DB: "beersdb"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+spec:
+  selector:
+    matchLabels:
+      app: webinar
+      component: db
+  template:
+    metadata:
+      labels:
+        app: webinar
+        component: db
+    spec:
+      containers:
+      - name: db
+        image: postgres:12.3
+        imagePullPolicy: IfNotPresent
+        envFrom:
+          - configMapRef:
+              name: dbcfg
+        resources:
+          limits:
+            memory: "1024Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 5432
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: db
+spec:
+  selector:
+    app: webinar
+    component: db
+  ports:
+  - port: 5432
+    protocol: TCP
+    name: postgres
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adminer
+spec:
+  selector:
+    matchLabels:
+      app: webinar
+      component: adminer
+  template:
+    metadata:
+      labels:
+        app: webinar
+        component: adminer
+    spec:
+      containers:
+      - name: adminer
+        image: adminer:4.7.7-standalone
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "250m"
+        ports:
+        - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: adminer
+spec:
+  selector:
+    app: webinar
+    component: adminer
+  ports:
+  - port: 8080
+    name: http
+    protocol: TCP
+
+
