@@ -8,8 +8,8 @@ Demos del webinar "Kubernetes ¿ Para que narices sirve?" impartido por [Eduard 
 Si te ha gustado este webinar y tienes ganas de ponerte con **devops**
 ¿Por qué no te apuntas a nuestro [Bootcamp devops online Lemoncode](https://lemoncode.net/bootcamp-devops#bootcamp-devops/inicio)? 
 
-# Agradecimientos
+# ¿Empezamos?
 
-El código de la API Deno ha sido sacado literalmente de: https://blog.logrocket.com/creating-your-first-rest-api-with-deno-and-postgres/
+Pues [vamos allá](./docs/inicio.md)
 
 

@@ -29,7 +29,8 @@ spec:
     spec:
       containers:
       - name: api
-        image: beersapi
+        image: eiximenis/webinarlc-beersapi
+        imagePullPolicy: Always
         envFrom:
           - configMapRef:
               name: apicfg

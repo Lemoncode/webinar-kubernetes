@@ -1,0 +1,29 @@
+version: '3.4'
+
+services:
+  api:
+    build:
+      context: api
+      dockerfile: Dockerfile
+    image: ${REGISTRY:-webinarlc}/beersapi
+    environment: 
+    - DB_USER=dbuser
+    - DB_DATABASE=beersdb
+    - DB_PWD=mySuperPwd!!2
+    - DB_HOST=host.docker.internal
+    - DB_PORT=5432
+    ports:
+    - "7700:7700"
+    
+  website:
+    build:
+      context: website
+      dockerfile: Dockerfile
+    image:  ${REGISTRY:-webinarlc}/beersweb
+    environment:
+      - API_SERVICE_HOST=${API_SERVICE_HOST:-api}
+      - API_SERVICE_PORT=7700
+    ports:
+      - 9000:80
+
+

@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api
+spec:
+  selector:
+    matchLabels:
+      app: webinar
+      component: api
+  template:
+    metadata:
+      labels:
+        app: webinar
+        component: api
+    spec:
+      volumes:
+      - name: sql-volume
+        configMap:
+          name: sqlseed
+      initContainers:
+      - name: seeddb
+        image: eiximenis/psql-client
+        imagePullPolicy: Always
+        volumeMounts:
+          - mountPath: /sql
+            name: sql-volume
+        env:
+          - name: PGPASSWORD
+            valueFrom:
+              configMapKeyRef:
+                key: DB_PWD
+                name: apicfg
+        envFrom:
+        - configMapRef:
+            name: apicfg
+        args:
+          - --host=$(DB_HOST)
+          - --dbname=$(DB_DATABASE)
+          - --username=$(DB_USER)
+          - --file=/sql/seed.sql
+      containers:
+      - name: api
+        image: eiximenis/webinarlc-beersapi
+        imagePullPolicy: Always
+        envFrom:
+          - configMapRef:
+              name: apicfg
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        ports:
+        - containerPort: 7700
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sqlseed
+data:
+  seed.sql: |
+    CREATE TABLE IF NOT EXISTS beers (
+        id integer PRIMARY KEY,
+        name VARCHAR(50) NOT NULL,
+        brand VARCHAR(50) NOT NULL,
+        is_premium BOOLEAN,
+        image_url VARCHAR(255) NOT NULl
+    );
+
+
+    INSERT INTO beers (id, name, brand, is_premium, image_url) VALUES (1, 'Voll Damm', 'Damm', false, '') ON CONFLICT (id) DO NOTHING;
+    INSERT INTO beers (id, name, brand, is_premium, image_url) VALUES (2, 'Estrella Damm', 'Damm', false, '') ON CONFLICT (id) DO NOTHING;
+    INSERT INTO beers (id, name, brand, is_premium, image_url) VALUES (3, 'Impaled', 'Espina de Ferro', true, '') ON CONFLICT (id) DO NOTHING;
+    INSERT INTO beers (id, name, brand, is_premium, image_url) VALUES (4, 'Mala Vida', 'Montseny', true, '') ON CONFLICT (id) DO NOTHING;

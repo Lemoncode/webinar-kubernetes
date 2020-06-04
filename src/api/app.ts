@@ -2,7 +2,7 @@ import { Application } from 'https://deno.land/x/oak/mod.ts';
 import router from './router.ts';
 
 const env = Deno.env.toObject()
-const HOST = env.HOST || '127.0.0.1'
+const HOST = env.HOST || '0.0.0.0'
 const PORT = env.PORT || 7700
 
 const app = new Application()
