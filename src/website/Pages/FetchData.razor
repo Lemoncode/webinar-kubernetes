@@ -3,7 +3,7 @@
 @using website.Data
 @inject BeersService Svc
 
-<h1>Weather forecast</h1>
+<h1>Beers Data</h1>
 
 <p>This component demonstrates fetching data from a service.</p>
 
@@ -29,7 +29,7 @@ else
                     <td>@beer.Name</td>
                     <td>@beer.Brand</td>
                     @if (beer.IsPremium) {
-                        <td><img src="~/img/star.png" /></td>
+                        <td><img src="img/star.png" /></td>
                     }
                     else {
                         <td> </td>
